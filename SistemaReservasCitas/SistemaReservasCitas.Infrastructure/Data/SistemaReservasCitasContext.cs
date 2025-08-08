@@ -61,6 +61,9 @@ namespace SistemaReservasCitas.Infrastructure.Data
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.Password)
                 .HasColumnName("psswd");
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.Email)
+                .HasColumnName("Email");
 
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.Rol)
