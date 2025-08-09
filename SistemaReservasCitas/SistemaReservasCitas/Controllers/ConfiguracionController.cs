@@ -8,7 +8,6 @@ namespace SistemaReservasCitas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize(Roles = "Admin")]
     public class ConfiguracionController : ControllerBase
     {
         private readonly IConfiguracionService _configuracionService;
@@ -21,6 +20,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpPost("fechas-habilitadas")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CrearFechaHabilitada([FromBody] CrearFechaHabilitadaDto fechaDto)
         {
             try
@@ -42,6 +42,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpPost("horarios")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CrearHorario([FromBody] CrearHorarioDto horarioDto)
         {
             try
@@ -63,6 +64,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpPost("turnos")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CrearTurno([FromBody] CrearTurnoDto turnoDto)
         {
             try
@@ -84,6 +86,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpGet("fechas-habilitadas/{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ObtenerFechaHabilitada(int id)
         {
             try
@@ -105,6 +108,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpGet("horarios/{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ObtenerHorario(int id)
         {
             try
@@ -126,6 +130,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpGet("turnos/{id}")]
+        [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> ObtenerTurno(int id)
         {
             try

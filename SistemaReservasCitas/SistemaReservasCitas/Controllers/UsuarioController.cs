@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SistemaReservasCitas.Application.Interfaces;
 using SistemaReservasCitas.Domain.DTOs;
 using SistemaReservasCitas.Domain.Entities;
@@ -17,6 +18,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> CrearUsuario([FromBody] CrearUsuarioDto usuarioDto)
         {
             try
@@ -35,6 +37,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> ObtenerUsuario(int id)
         {
             try
@@ -52,7 +55,7 @@ namespace SistemaReservasCitas.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        /*[HttpPut("{id}")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] CrearUsuarioDto usuario)
         {
             try
@@ -72,9 +75,10 @@ namespace SistemaReservasCitas.Controllers
             {
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
-        }
+        }*/
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> EliminarUsuario(int id)
         {
             try
