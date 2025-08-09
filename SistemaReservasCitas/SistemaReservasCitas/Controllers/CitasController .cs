@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SistemaReservasCitas.Application.Interfaces;
 using SistemaReservasCitasApi.Application.Interfaces;
 
@@ -16,6 +17,7 @@ namespace SistemaReservasCitasApi.Controllers
         }
 
         [HttpPost("reservar")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> ReservarCita(int usuarioId, int turnoId)
         {
             try
@@ -30,6 +32,7 @@ namespace SistemaReservasCitasApi.Controllers
         }
 
         [HttpGet("usuario/{usuarioId}")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> ObtenerCitasPorUsuario(int usuarioId)
         {
             var citas = await _citaService.ObtenerCitasPorUsuarioAsync(usuarioId);
@@ -37,6 +40,7 @@ namespace SistemaReservasCitasApi.Controllers
         }
 
         [HttpDelete("{citaId}")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> CancelarCita(int citaId)
         {
             var success = await _citaService.CancelarCitaAsync(citaId);

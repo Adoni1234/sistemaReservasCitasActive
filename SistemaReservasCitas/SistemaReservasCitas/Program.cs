@@ -1,6 +1,9 @@
 using System.Reflection.PortableExecutable;
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SistemaReservasCitas.Application.Interfaces;
 using SistemaReservasCitas.Application.Services;
 using SistemaReservasCitas.Application.ValidacionesServices;
@@ -12,6 +15,7 @@ using SistemaReservasCitasApi.Application.Services;
 using SistemaReservasCitasApi.Infrastructure.Repositories;
 using Serilog.Filters;
 using Serilog;
+using SistemaReservasCitas.Authorizations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +57,26 @@ Log.Logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog();
 
+// Agrego el JWT configuration:
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IInicioSesion, InicioInicioSesionService>();
+builder.Services.AddScoped<IJwt, JwtProvider>(); // <- REGISTRA EL JWT
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
 
 // Agregar Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -69,11 +93,12 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema Reservas Citas API V1");
-    c.RoutePrefix = "swagger"; // Hace que esté en https://localhost:7205/
+    c.RoutePrefix = "swagger"; // Hace que estï¿½ en https://localhost:7205/
 });
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();
 
