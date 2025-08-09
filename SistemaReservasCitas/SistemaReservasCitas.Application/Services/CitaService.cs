@@ -12,30 +12,40 @@ namespace SistemaReservasCitasApi.Application.Services
 
         private readonly IRepository<Cita> _citaRepository;
         private readonly IRepository<Turno> _turnoRepository;
+        private readonly IRepository<Usuario> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ReservaValidations _validations;
-        public CitaService(IRepository<Cita> citaRepository, IRepository<Turno> turnoRepository, IEmailService emailService, ReservaValidations validations)
+        public CitaService(
+            IRepository<Cita> citaRepository, 
+            IRepository<Turno> turnoRepository, 
+            IEmailService emailService, 
+            ReservaValidations validations, 
+            IRepository<Usuario> userRepository)
         {
             _validations = validations;
             _citaRepository = citaRepository;
             _turnoRepository = turnoRepository;
             _emailService = emailService;
+            _userRepository = userRepository;
         }
 
         public async Task<Cita> ReservarCitaAsync(int usuarioId, int turnoId)
         {
-            await _validations.ValidarTurnoActivoAsync(turnoId);
+                await _validations.ValidarTurnoActivoAsync(turnoId);
 
-            var turno = await _turnoRepository.GetByIdAsync(turnoId);
+                var turno = await _turnoRepository.GetByIdAsync(turnoId);
+                var user = await _userRepository.GetByIdAsync(usuarioId);
+                var email = user.Email;
 
-            await _validations.ValidarFechaHabilitadaAsync(turno.Fecha);
-            await _validations.ValidarTurnoNoLlenoAsync(turnoId);
-            await _validations.ValidarUsuarioSinCitaEnFechaAsync(usuarioId, turno.Fecha);
+                await _validations.ValidarFechaHabilitadaAsync(turno.Fecha);
+                await _validations.ValidarTurnoNoLlenoAsync(turnoId);
+                await _validations.ValidarUsuarioSinCitaEnFechaAsync(usuarioId, turno.Fecha);
 
-            var cita = new Cita { IdUsuario = usuarioId, TurnoId = turnoId };
-            await _citaRepository.AddAsync(cita);
-            await _emailService.SendEmailAsync("user@GMAIL.com", "Cita Reservada", "Su cita ha sido reservada.");
-            return cita;
+                var cita = new Cita { IdUsuario = usuarioId, TurnoId = turnoId };
+                await _citaRepository.AddAsync(cita);
+                await _emailService.SendEmailAsync(email, "Cita Reservada", $"Estimado/a {user.UsuarioNombre} su cita fue reservada correctamente, favor de asistir en la fecha programada {turno.Fecha}");
+                return cita;
+            
         }
 
         public async Task<IEnumerable<Cita>> ObtenerCitasPorUsuarioAsync(int usuarioId)

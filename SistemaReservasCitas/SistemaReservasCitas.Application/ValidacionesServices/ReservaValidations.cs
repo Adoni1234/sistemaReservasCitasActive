@@ -60,5 +60,7 @@ namespace SistemaReservasCitas.Application.ValidacionesServices
             if (tieneCita)
                 throw new Exception("Un usuario no puede tener más de una cita por día.");
         }
+
+        
     }
 }
