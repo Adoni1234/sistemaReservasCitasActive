@@ -11,6 +11,7 @@ namespace SistemaReservasCitas.Domain.DTOs
     {
         public string UsuarioNombre { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public Rol Rol { get; set; }
     }
 }

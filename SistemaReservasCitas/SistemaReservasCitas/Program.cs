@@ -18,6 +18,17 @@ using Serilog;
 using SistemaReservasCitas.Authorizations;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();  // Si no usas cookies o auth, puedes eliminar esta línea
+    });
+});
+
 
 // Agregar servicios al contenedor
 builder.Services.AddControllers();
@@ -27,6 +38,8 @@ builder.Services.AddControllers();
 //    {
 //        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 //    });
+
+
 builder.Services.AddDbContext<SistemaReservasCitasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
            .EnableSensitiveDataLogging()
@@ -95,7 +108,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema Reservas Citas API V1");
     c.RoutePrefix = "swagger"; // Hace que est� en https://localhost:7205/
 });
-
+app.UseCors("AllowAngularDev");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication(); 
