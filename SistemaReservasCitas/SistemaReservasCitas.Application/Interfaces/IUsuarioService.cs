@@ -14,6 +14,8 @@ namespace SistemaReservasCitas.Application.Interfaces
             Task<Usuario> ObtenerUsuarioAsync(int id);
             Task<Usuario> ActualizarUsuarioAsync(int id, CrearUsuarioDto usuario);
             Task<bool> EliminarUsuarioAsync(int id);
-        
+            Task<IEnumerable<Usuario>> ObtenerUsuarioAllAsync();
+
+
     }
 }

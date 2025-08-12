@@ -17,6 +17,25 @@ namespace SistemaReservasCitas.Controllers
             _usuarioService = usuarioService;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> ObtenerTodosUsuarios()
+        {
+            try
+            {
+                var usuario = await _usuarioService.ObtenerUsuarioAllAsync();
+                return Ok(usuario);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> CrearUsuario([FromBody] CrearUsuarioDto usuarioDto)
@@ -37,7 +56,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ObtenerUsuario(int id)
         {
             try
@@ -55,7 +74,8 @@ namespace SistemaReservasCitas.Controllers
             }
         }
 
-        /*[HttpPut("{id}")]
+        [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] CrearUsuarioDto usuario)
         {
             try
@@ -75,7 +95,7 @@ namespace SistemaReservasCitas.Controllers
             {
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
-        }*/
+        }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]

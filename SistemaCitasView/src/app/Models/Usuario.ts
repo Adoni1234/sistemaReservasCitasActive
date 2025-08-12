@@ -3,4 +3,5 @@ export interface Usuario{
     Password : string
     Email : string
     Rol : number
+    citas?: any;
 }

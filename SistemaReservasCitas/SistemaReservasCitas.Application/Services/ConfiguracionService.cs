@@ -100,10 +100,23 @@ namespace SistemaReservasCitas.Application.Services
                 throw new KeyNotFoundException("Turno no encontrado.");
             return turno;
         }
+     
+        public async Task<IEnumerable<FechaHabilitada>> ObtenerFechaHabilitadaAllAsync()
+        {
+            var fecha = await _fechasRepository.GetAllAsync();
+            return fecha;
+        }
 
-        //public async Task GenerarHorariosAsync()
-        //{
-        //    await _horarioGeneradorService.GenerarHorariosAsync();
-        //}
+        public async Task<IEnumerable<Horario>> ObtenerHorarioAllAsync()
+        {
+            var horario = await _horarioRepository.GetAllAsync();
+            return horario;
+        }
+
+        public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync()
+        {
+            var turno = await _turnoRepository.GetAllAsync();
+            return turno;
+        }
     }
 }
