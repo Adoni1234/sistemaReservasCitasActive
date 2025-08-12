@@ -17,6 +17,12 @@ namespace SistemaReservasCitas.Application.Services
             _usuarioRepository = usuarioRepository;
         }
 
+        public async Task<IEnumerable<Usuario>> ObtenerUsuarioAllAsync()
+        {
+            var usuario = await _usuarioRepository.GetAllAsync();
+            return usuario;
+        }
+
         public async Task<Usuario> CrearUsuarioAsync(CrearUsuarioDto usuarioDto)
         {
             if (usuarioDto == null || string.IsNullOrEmpty(usuarioDto.UsuarioNombre) || string.IsNullOrEmpty(usuarioDto.Password))
@@ -26,7 +32,8 @@ namespace SistemaReservasCitas.Application.Services
             {
                 UsuarioNombre = usuarioDto.UsuarioNombre,
                 Password = usuarioDto.Password,
-                Rol = usuarioDto.Rol
+                Rol = usuarioDto.Rol,
+                Email = usuarioDto.Email
             };
 
             UsuarioValidator.ValidateUsuario(usuario);

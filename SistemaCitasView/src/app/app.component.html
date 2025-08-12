@@ -1,1 +1,12 @@
-<router-outlet></router-outlet>
+<div *ngIf="isLoggedIn; else login">
+  <div class="flex h-screen">
+    <LayoutComponent></LayoutComponent>
+    <main class="flex-1 overflow-auto p-6 bg-gray-100">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<ng-template #login>
+  <router-outlet></router-outlet>
+</ng-template>

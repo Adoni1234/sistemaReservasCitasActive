@@ -150,5 +150,56 @@ namespace SistemaReservasCitas.Controllers
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
         }
+
+
+
+        [HttpGet("fechas-habilitadas")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> ObtenerTodasFechaHabilitada()
+        {
+            try
+            {
+                _logger.LogInformation("Consultando fecha habilitada");
+                var fecha = await _configuracionService.ObtenerTurnoAllAsync();
+                return Ok(fecha);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error interno al consultar fecha habilitada: {Message}", ex.Message);
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
+        [HttpGet("horarios")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> ObtenerTodosHorario()
+        {
+            try
+            {
+                _logger.LogInformation("Consultando horario");
+                var horario = await _configuracionService.ObtenerHorarioAllAsync();
+                return Ok(horario);
+            } catch (Exception ex)
+            {
+                _logger.LogError("Error interno al consultar horario: {Message}", ex.Message);
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
+        [HttpGet("turnos")]
+        [Authorize(Roles = "admin, user")]
+        public async Task<IActionResult> ObtenerTodosTurno()
+        {
+            try
+            {
+                var turno = await _configuracionService.ObtenerTurnoAllAsync();
+                return Ok(turno);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error interno al consultar turno: {Message}", ex.Message);
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
     }
 }

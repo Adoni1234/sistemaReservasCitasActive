@@ -15,7 +15,7 @@ export class LoginServicesService {
     return this.http.post<any>(`${environment.apiUrl}/${this.url}`, data);
   }
 
-  public loginAuth(data : any) {
-     return this.http.post<any>(`${environment.apiUrl}/InicioSesion/login`, data);
-  }
+    public loginAuth(data : any) {
+      return this.http.post<any>(`${environment.apiUrl}/InicioSesion/login`, data);
+    }
 }
