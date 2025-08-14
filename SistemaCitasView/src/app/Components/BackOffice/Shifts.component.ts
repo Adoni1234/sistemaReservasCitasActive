@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { formatDate } from "@angular/common";
 import { AdminServiceService } from "../../services/backOffice/admin-service.service";
 import { Turnos } from "../../Models/Turnos";
+import { Horaios } from "../../Models/Horarios";
 
 @Component({
   selector: "ShiftsComponent",
@@ -75,7 +76,8 @@ import { Turnos } from "../../Models/Turnos";
           <tr *ngFor="let turno of shifts">
             <td class="border px-4 py-2">{{ turno.id }}</td>
             <td class="border px-4 py-2">{{ formatFecha(turno.fecha) }}</td>
-            <td class="border px-4 py-2">{{ turno.idHorario }}</td>
+           <td class="border px-4 py-2">{{ getHoraByHorarioId(turno.idHorario) }}</td>
+
             <td class="border px-4 py-2">{{ turno.estacionesCantidad }}</td>
             <td class="border px-4 py-2">{{ turno.tiempoCita }} min</td>
           </tr>
@@ -86,13 +88,12 @@ import { Turnos } from "../../Models/Turnos";
 })
 export class ShiftsComponent implements OnInit {
   shifts: Turnos[] = [];
+  horarios: Horaios[] = []; // Solo en este componente
   selectedDate: string | null = null;
   estacionesCantidad: number | null = null;
   tiempoCita: number | null = null;
   today: string = "";
-
   showForm: boolean = false;
-
   message: string | null = null;
   messageType: "success" | "error" = "success";
 
@@ -101,13 +102,25 @@ export class ShiftsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadSchedules();
     this.loadShifts();
+  }
+
+  loadSchedules() {
+    this.adminService.getSchedules().subscribe((data) => {
+      this.horarios = data;
+    });
   }
 
   loadShifts() {
     this.adminService.getShifts().subscribe((data) => {
       this.shifts = data;
     });
+  }
+
+  getHoraByHorarioId(idHorario: number): string {
+    const horario = this.horarios.find(h => h.id === idHorario);
+    return horario ? horario.inicio  +  " - "+ horario.fin : `ID ${idHorario}`;
   }
 
   createShift() {
@@ -125,8 +138,6 @@ export class ShiftsComponent implements OnInit {
       next: () => {
         this.shifts.push(newShift);
         this.showMessage("Turno registrado correctamente.", "success");
-
-        // Limpiar campos
         this.selectedDate = null;
         this.estacionesCantidad = null;
         this.tiempoCita = null;

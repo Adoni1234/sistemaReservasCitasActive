@@ -30,4 +30,8 @@
     <ProjectReference Include="..\SistemaReservasCitas.Infrastructure\SistemaReservasCitas.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 </Project>

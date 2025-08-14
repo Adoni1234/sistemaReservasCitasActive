@@ -38,7 +38,7 @@ import { formatDate } from "@angular/common";
       </button>
 
       <!-- Tabla -->
-      <table class="table-auto w-full mt-4 border">
+      <table class="table-auto w-full mt-4 border text-center">
         <thead>
           <tr class="bg-gray-200">
             <th class="px-4 py-2">ID</th>
@@ -52,6 +52,7 @@ import { formatDate } from "@angular/common";
           </tr>
         </tbody>
       </table>
+
     </div>
   `,
 })
