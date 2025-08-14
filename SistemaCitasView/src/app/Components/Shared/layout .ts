@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth-service.service';
+
 @Component({
-    selector: 'LayoutComponent',
-    template: `
+  selector: 'LayoutComponent',
+  template: `
     <div class="h-screen w-64 bg-gray-800 text-white flex flex-col">
 
       <!-- Logo y usuario -->
@@ -15,7 +16,7 @@ import { AuthService } from '../../services/auth-service.service';
       </div>
 
       <!-- Botones de menú -->
-      <nav class="flex-1 mt-4">
+      <nav class="flex-1 mt-4 flex flex-col">
         <button
           class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
           routerLink="/userManager"
@@ -26,10 +27,26 @@ import { AuthService } from '../../services/auth-service.service';
 
         <button
           class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
-          routerLink="/gestion-fechas"
+          routerLink="/BusinessDate"
         >
           <i class="fas fa-calendar-alt mr-3"></i>
           <span>Gestión Fechas Hábiles</span>
+        </button>
+
+        <button
+          class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
+          routerLink="/Shifts"
+        >
+          <i class="fas fa-clock mr-3"></i>
+          <span>Gestión Turnos</span>
+        </button>
+
+        <button
+          class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
+          routerLink="/Schedules"
+        >
+          <i class="fas fa-hourglass-half mr-3"></i>
+          <span>Gestión Horarios</span>
         </button>
 
         <button
@@ -44,27 +61,24 @@ import { AuthService } from '../../services/auth-service.service';
   `
 })
 export class LayoutComponent {
-    userName: string = 'Usuario';
+  userName: string = 'Usuario';
 
-constructor(private authService: AuthService) {
-  const token = this.authService.getToken();
-  if (token) {
-    const decoded = this.authService.decodeToken();
-    console.log(decoded);
-    if (decoded && decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']) {
-      this.userName = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+  constructor(private authService: AuthService) {
+    const token = this.authService.getToken();
+    if (token) {
+      const decoded = this.authService.decodeToken();
+      if (decoded && decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']) {
+        this.userName = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+      } else {
+        this.userName = 'Invitado';
+      }
     } else {
       this.userName = 'Invitado';
     }
-  } else {
-    this.userName = 'Invitado';
   }
 
-}
-
-
-    logout() {
-        this.authService.removeToken();
-        window.location.href = '/login';
-    }
+  logout() {
+    this.authService.removeToken();
+    window.location.href = '/login';
+  }
 }

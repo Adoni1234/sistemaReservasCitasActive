@@ -20,7 +20,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpPost("fechas-habilitadas")]
-        [Authorize(Roles = "admin")]
+       // [Authorize(Roles = "admin")]
         public async Task<IActionResult> CrearFechaHabilitada([FromBody] CrearFechaHabilitadaDto fechaDto)
         {
             try
@@ -42,7 +42,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpPost("horarios")]
-        [Authorize(Roles = "admin")]
+       // [Authorize(Roles = "admin")]
         public async Task<IActionResult> CrearHorario([FromBody] CrearHorarioDto horarioDto)
         {
             try
@@ -58,13 +58,14 @@ namespace SistemaReservasCitas.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.InnerException?.Message);
                 _logger.LogError("Error interno al crear horario: {Message}", ex.Message);
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
         }
 
         [HttpPost("turnos")]
-        [Authorize(Roles = "admin")]
+       // [Authorize(Roles = "admin")]
         public async Task<IActionResult> CrearTurno([FromBody] CrearTurnoDto turnoDto)
         {
             try
@@ -86,7 +87,7 @@ namespace SistemaReservasCitas.Controllers
         }
 
         [HttpGet("fechas-habilitadas/{id}")]
-        [Authorize(Roles = "admin")]
+       [Authorize(Roles = "admin")]
         public async Task<IActionResult> ObtenerFechaHabilitada(int id)
         {
             try
@@ -160,7 +161,7 @@ namespace SistemaReservasCitas.Controllers
             try
             {
                 _logger.LogInformation("Consultando fecha habilitada");
-                var fecha = await _configuracionService.ObtenerTurnoAllAsync();
+                var fecha = await _configuracionService.ObtenerFechaHabilitadaAllAsync();
                 return Ok(fecha);
             }
             catch (Exception ex)

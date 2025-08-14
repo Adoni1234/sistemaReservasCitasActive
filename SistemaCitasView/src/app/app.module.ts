@@ -10,6 +10,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { UserManagerComponent } from './Components/BackOffice/userManager.component';
 import { LayoutComponent } from './Components/Shared/layout ';
+import { BusinessDateComponent } from './Components/BackOffice/BusinessDate.component';
+import { ShiftsComponent } from './Components/BackOffice/Shifts.component';
+import { SchedulesComponent } from './Components/BackOffice/Schedules.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { LayoutComponent } from './Components/Shared/layout ';
     LoginComponent,
     RegisterComponent,
     UserManagerComponent,
-    LayoutComponent  // ¡Aquí deben estar!
+    LayoutComponent ,
+    BusinessDateComponent,
+    ShiftsComponent,
+    SchedulesComponent
   ],
   imports: [
     BrowserModule,

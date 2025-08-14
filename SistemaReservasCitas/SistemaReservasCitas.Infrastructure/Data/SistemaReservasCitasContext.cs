@@ -125,10 +125,31 @@ namespace SistemaReservasCitas.Infrastructure.Data
             //modelBuilder.Entity<Turno>()
             //    .Property(t => t.Estado)
 
+            modelBuilder.Entity<Horario>(entity =>
+            {
+                entity.ToTable("Horario");
 
-            modelBuilder.Entity<Horario>()
-                .Property(h => h.NombreTurno)
-                .HasDefaultValue("Sin nombre");
+                entity.HasKey(h => h.Id);
+
+                entity.Property(h => h.Inicio)
+                      .HasColumnName("inicio")
+                      .HasDefaultValue(TimeSpan.Zero);
+
+                entity.Property(h => h.Fin)
+                      .HasColumnName("fin")
+                      .HasDefaultValue(TimeSpan.Zero);
+
+                entity.Property(h => h.NombreTurno)
+                      .HasColumnName("nombre_turno") // ✅ aquí está la clave
+                      .HasMaxLength(50)
+                      .HasDefaultValue("Sin nombre");
+            });
+
+
+
+
+
+
         }
     }
 }
