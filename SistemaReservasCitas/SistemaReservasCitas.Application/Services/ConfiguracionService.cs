@@ -46,19 +46,32 @@ namespace SistemaReservasCitas.Application.Services
                 throw new ArgumentException("Inicio y fin del horario son requeridos.");
 
             // Parsear strings a TimeSpan
-            if (!TimeSpan.TryParse(horarioDto.Inicio, out TimeSpan inicio) || !TimeSpan.TryParse(horarioDto.Fin, out TimeSpan fin))
-                throw new ArgumentException("Formato de hora inválido. Use el formato HH:mm (ejemplo: 08:00).");
+            if (!TimeSpan.TryParse(horarioDto.Inicio, out TimeSpan inicio) ||
+                !TimeSpan.TryParse(horarioDto.Fin, out TimeSpan fin))
+                throw new ArgumentException("Formato de hora inválido. Use HH:mm (ejemplo: 08:00).");
 
             var horario = new Horario
             {
                 Inicio = inicio,
                 Fin = fin,
-                NombreTurno = horarioDto.NombreTurno
+                NombreTurno = string.IsNullOrEmpty(horarioDto.NombreTurno)
+                             ? "Sin nombre"
+                             : horarioDto.NombreTurno
             };
 
-            await _horarioRepository.AddAsync(horario);
-            return horario;
+
+            try
+            {
+                await _horarioRepository.AddAsync(horario);
+                return horario;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al guardar Horario: " + ex.InnerException?.Message);
+                throw;
+            }
         }
+
 
         public async Task<Turno> CrearTurnoAsync(CrearTurnoDto turnoDto)
         {

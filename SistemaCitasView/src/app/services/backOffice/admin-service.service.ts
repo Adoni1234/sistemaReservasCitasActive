@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment.development';
 import { Scheduler } from 'timers/promises';
 import { Horaios } from '../../Models/Horarios';
 import { Turnos } from '../../Models/Turnos';
+import { fechaHabiles } from '../../Models/FechaHabiles';
 
 @Injectable({
   providedIn: 'root'
@@ -33,22 +34,38 @@ export class AdminServiceService {
     }
 
     public CreateSchedules(data: Horaios) {
-       return this.http.post<any>(`${environment.apiUrl}/${this.url}/fechas-habilitadas`,data,{ headers: this.getHeaders() }
-      );
+       return this.http.post<any>(`${environment.apiUrl}/${this.url}/horarios`, data, { headers: this.getHeaders() });
+      
     }
 
     public getBusinessDatesById(id: number) {
-       return this.http.get<any>(`${environment.apiUrl}/${this.url}/fechas-habilitadas/${id}`,{ headers: this.getHeaders() }
+       return this.http.get<fechaHabiles>(`${environment.apiUrl}/${this.url}/fechas-habilitadas/${id}`,{ headers: this.getHeaders() }
       );
     }
 
     public getShiftsbyid(id: number) {
-       return this.http.get<any>(`${environment.apiUrl}/${this.url}/fechas-habilitadas/${id}`,{ headers: this.getHeaders() }
+       return this.http.get<any>(`${environment.apiUrl}/${this.url}/turnos/${id}`,{ headers: this.getHeaders() }
       );
     }
 
     public getSchedulesbyid(id: number) {
-       return this.http.get<any>(`${environment.apiUrl}/${this.url}/fechas-habilitadas/${id}`,{ headers: this.getHeaders() }
+       return this.http.get<any>(`${environment.apiUrl}/${this.url}/horarios/${id}`,{ headers: this.getHeaders() }
+      );
+    }
+//
+
+public getBusinessDates() {
+  return this.http.get<fechaHabiles[]>(`${environment.apiUrl}/${this.url}/fechas-habilitadas`, { headers: this.getHeaders() });
+}
+
+
+    public getShifts() {
+       return this.http.get<Turnos[]>(`${environment.apiUrl}/${this.url}/turnos`,{ headers: this.getHeaders() }
+      );
+    }
+
+    public getSchedules() {
+       return this.http.get<Horaios[]>(`${environment.apiUrl}/${this.url}/horarios`,{ headers: this.getHeaders() }
       );
     }
 
