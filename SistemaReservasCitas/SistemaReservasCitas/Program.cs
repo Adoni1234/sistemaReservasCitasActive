@@ -16,6 +16,7 @@ using SistemaReservasCitasApi.Infrastructure.Repositories;
 using Serilog.Filters;
 using Serilog;
 using SistemaReservasCitas.Authorizations;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -59,12 +60,16 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(SqlRepository<>));
 
 builder.Services.AddScoped<ReservaValidations>();
 builder.Services.AddScoped<ICitaService, CitaService>();
-Log.Logger = new LoggerConfiguration()
-.MinimumLevel.Information()
-    .Filter.ByExcluding(Matching.FromSource("Microsoft"))
-    .Filter.ByExcluding(Matching.FromSource("System"))
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+//.MinimumLevel.Information()
+//    .Filter.ByExcluding(Matching.FromSource("Microsoft"))
+//    .Filter.ByExcluding(Matching.FromSource("System"))
+//    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
+
+// My SingletonLogger
+builder.Logging.AddConsole(); // consola sigue activa
+builder.Logging.AddProvider(new SingletonLoggerProvider()); // nuestro logger singleton a archivo
 
 
 builder.Logging.ClearProviders();
