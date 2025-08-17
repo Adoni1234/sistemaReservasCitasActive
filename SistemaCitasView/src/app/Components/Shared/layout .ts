@@ -15,8 +15,10 @@ import { AuthService } from '../../services/auth-service.service';
         </div>
       </div>
 
+      
       <!-- Botones de menú -->
       <nav class="flex-1 mt-4 flex flex-col">
+        <div *ngIf="role == 'admin'">
         <button
           class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
           routerLink="/userManager"
@@ -48,27 +50,41 @@ import { AuthService } from '../../services/auth-service.service';
           <i class="fas fa-hourglass-half mr-3"></i>
           <span>Gestión Horarios</span>
         </button>
+      </div>
+
+      <div *ngIf=" role == 'user'">
+
+      <button
+          class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
+          routerLink="/Appointments"
+        >
+          <i class="fas fa-clock mr-3"></i>
+          <span>Citas</span>
+        </button>
+
+      </div>
 
         <button
           class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors mt-auto"
-          (click)="logout()"
+          (click)="logout()" 
         >
           <i class="fas fa-sign-out-alt mr-3"></i>
           <span>Salir</span>
         </button>
+        
       </nav>
-    </div>
   `
 })
-export class LayoutComponent {
+export class LayoutComponent { // admin o user Role -> Admin o user -> *ngIF="admin"
   userName: string = 'Usuario';
-
+  role: string = '';
   constructor(private authService: AuthService) {
     const token = this.authService.getToken();
     if (token) {
       const decoded = this.authService.decodeToken();
       if (decoded && decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']) {
         this.userName = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+        this.role = decoded[`http://schemas.microsoft.com/ws/2008/06/identity/claims/role`];
       } else {
         this.userName = 'Invitado';
       }

@@ -6,6 +6,7 @@ import { UserManagerComponent } from './Components/BackOffice/userManager.compon
 import { BusinessDateComponent } from './Components/BackOffice/BusinessDate.component';
 import { ShiftsComponent } from './Components/BackOffice/Shifts.component';
 import { SchedulesComponent } from './Components/BackOffice/Schedules.component';
+import { AppointmentComponent } from './Components/Appointment/appointment.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'Schedules', 
     component: SchedulesComponent
+  },
+  {
+    path: 'Appointments',
+    component: AppointmentComponent
   }
 ];
 

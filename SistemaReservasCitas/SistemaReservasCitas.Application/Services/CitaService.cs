@@ -1,11 +1,11 @@
 ﻿using SistemaReservasCitas.Application.Interfaces;
 using SistemaReservasCitas.Application.ValidacionesServices;
+using SistemaReservasCitas.Domain.DTOs;
 using SistemaReservasCitas.Domain.Entities;
 using SistemaReservasCitas.Domain.Repositories;
-
 using SistemaReservasCitasApi.Application.Interfaces;
 
-namespace SistemaReservasCitasApi.Application.Services
+namespace SistemaReservasCitas.Application.Services
 {
     public class CitaService : ICitaService
     {
@@ -48,10 +48,21 @@ namespace SistemaReservasCitasApi.Application.Services
             
         }
 
-        public async Task<IEnumerable<Cita>> ObtenerCitasPorUsuarioAsync(int usuarioId)
+        public async Task<IEnumerable<CitasDto>> ObtenerCitasPorUsuarioAsync(int usuarioId)
         {
             var citas = await _citaRepository.GetAllAsync();
-            return citas.Where(c => c.IdUsuario == usuarioId);
+            List<CitasDto> citasDto = new List<CitasDto>();
+            foreach (var cita in citas)
+            {
+                citasDto.Add(new CitasDto()
+                {
+                    Id = cita.Id,
+                    UsuarioId = usuarioId,
+                    TurnoId = cita.TurnoId
+                    
+                });
+            }
+            return citasDto.Where(c => c.UsuarioId == usuarioId).ToList();
         }
 
         public async Task<bool> CancelarCitaAsync(int citaId)

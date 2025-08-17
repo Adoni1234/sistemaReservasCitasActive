@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SistemaReservasCitas.Application.Interfaces;
 using SistemaReservasCitas.Domain.DTOs;
+using SistemaReservasCitas.Domain.Entities;
 
 namespace SistemaReservasCitas.Controllers
 {
@@ -177,6 +179,7 @@ namespace SistemaReservasCitas.Controllers
         {
             try
             {
+                
                 _logger.LogInformation("Consultando horario");
                 var horario = await _configuracionService.ObtenerHorarioAllAsync();
                 return Ok(horario);
@@ -189,11 +192,30 @@ namespace SistemaReservasCitas.Controllers
 
         [HttpGet("turnos")]
         [Authorize(Roles = "admin, user")]
-        public async Task<IActionResult> ObtenerTodosTurno()
+        public async Task<IActionResult> ObtenerTodosTurno(int userId)
         {
             try
             {
-                var turno = await _configuracionService.ObtenerTurnoAllAsync();
+                int id = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var turno = await _configuracionService.ObtenerTurnoAllAsync(id);
+                return Ok(turno);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error interno al consultar turno: {Message}", ex.Message);
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
+        [HttpGet("turnos/usuarios/thisUser")]
+        [AllowAnonymous]
+        //[Authorize(Roles = "user")]
+        public async Task<IActionResult> ObtenerTodosLosTurnosDeEsteUsuario()
+        {
+            try
+            {
+                int id = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var turno = await _configuracionService.ObtenerTodosLosTurnosDeEsteUsuarioAsync(id);
                 return Ok(turno);
             }
             catch (Exception ex)

@@ -13,7 +13,7 @@ namespace SistemaReservasCitasApi.Infrastructure.Repositories
 {
     public class SqlRepository<T> : IRepository<T> where T : class
     {
-        private readonly SistemaReservasCitasContext _context;
+        protected readonly SistemaReservasCitasContext _context;
 
         public SqlRepository(SistemaReservasCitasContext context)
         {
@@ -25,7 +25,7 @@ namespace SistemaReservasCitasApi.Infrastructure.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }

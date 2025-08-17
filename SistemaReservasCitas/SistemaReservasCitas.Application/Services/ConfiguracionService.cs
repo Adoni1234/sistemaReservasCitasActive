@@ -12,12 +12,12 @@ namespace SistemaReservasCitas.Application.Services
     {
         private readonly IRepository<FechaHabilitada> _fechasRepository;
         private readonly IRepository<Horario> _horarioRepository;
-        private readonly IRepository<Turno> _turnoRepository;
+        private readonly ITurnoRepository _turnoRepository;
 
         public ConfiguracionService(
             IRepository<FechaHabilitada> fechasRepository,
             IRepository<Horario> horarioRepository,
-            IRepository<Turno> turnoRepository)
+            ITurnoRepository turnoRepository)
         {
             _fechasRepository = fechasRepository;
             _horarioRepository = horarioRepository;
@@ -119,6 +119,11 @@ namespace SistemaReservasCitas.Application.Services
             var fecha = await _fechasRepository.GetAllAsync();
             return fecha;
         }
+        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDeEsteUsuarioAsync(int userId)
+        {
+            
+            return await _turnoRepository.GetAllTheShiftsOfTheUserAsync(userId);
+        }
 
         public async Task<IEnumerable<Horario>> ObtenerHorarioAllAsync()
         {
@@ -126,10 +131,16 @@ namespace SistemaReservasCitas.Application.Services
             return horario;
         }
 
-        public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync()
+        //REMINDER: Hacer un metodo aparte para este filtro, ya que esa logica nos afecta el controlador general.
+        //TODO: COMPAI LLAMAR A ADONI PA QUE NO NOS LLEVE EL DIABLO.
+        public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync(int userId)
         {
-            var turno = await _turnoRepository.GetAllAsync();
-            return turno;
+            var turnos = await _turnoRepository.GetAllAsync();
+            List<Turno> turnosFiltrados = turnos.ToList();
+            //turnosFiltrados.RemoveAll(t => t.Citas.Any(c => c.IdUsuario == userId));
+         
+            return turnosFiltrados;
         }
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaReservasCitas.Application.Interfaces;
+using SistemaReservasCitas.Domain.DTOs;
 using SistemaReservasCitasApi.Application.Interfaces;
 
 namespace SistemaReservasCitasApi.Controllers
@@ -16,7 +17,7 @@ namespace SistemaReservasCitasApi.Controllers
             _citaService = citaService;
         }
 
-        [HttpPost("reservar")]
+        [HttpPost("reservar/{usuarioId:int}/{turnoId:int}")]
         [Authorize(Roles = "user")]
         public async Task<IActionResult> ReservarCita(int usuarioId, int turnoId)
         {
@@ -32,7 +33,8 @@ namespace SistemaReservasCitasApi.Controllers
         }
 
         [HttpGet("usuario/{usuarioId}")]
-        [Authorize(Roles = "user")]
+        [AllowAnonymous]
+        //[Authorize(Roles = "user")]
         public async Task<IActionResult> ObtenerCitasPorUsuario(int usuarioId)
         {
             var citas = await _citaService.ObtenerCitasPorUsuarioAsync(usuarioId);

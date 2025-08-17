@@ -1,6 +1,4 @@
-using System.Reflection.PortableExecutable;
 using System.Text;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,8 +11,7 @@ using SistemaReservasCitas.Infrastructure.Data;
 using SistemaReservasCitasApi.Application.Interfaces;
 using SistemaReservasCitasApi.Application.Services;
 using SistemaReservasCitasApi.Infrastructure.Repositories;
-using Serilog.Filters;
-using Serilog;
+
 using SistemaReservasCitas.Authorizations;
 using Infrastructure;
 
@@ -54,6 +51,7 @@ builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IEmailService, EmailService>(provider =>
     new EmailService(builder.Configuration));
 builder.Services.AddScoped<IConfiguracionService, ConfiguracionService>();
+builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(SqlRepository<>));
 
@@ -70,10 +68,6 @@ builder.Services.AddScoped<ICitaService, CitaService>();
 // My SingletonLogger
 builder.Logging.AddConsole(); // consola sigue activa
 builder.Logging.AddProvider(new SingletonLoggerProvider()); // nuestro logger singleton a archivo
-
-
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog();
 
 // Agrego el JWT configuration:
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
