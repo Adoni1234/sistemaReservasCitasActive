@@ -13,6 +13,7 @@ import { LayoutComponent } from './Components/Shared/layout ';
 import { BusinessDateComponent } from './Components/BackOffice/BusinessDate.component';
 import { ShiftsComponent } from './Components/BackOffice/Shifts.component';
 import { SchedulesComponent } from './Components/BackOffice/Schedules.component';
+import { AppointmentComponent } from './Components/Appointment/appointment.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SchedulesComponent } from './Components/BackOffice/Schedules.component'
     LayoutComponent ,
     BusinessDateComponent,
     ShiftsComponent,
-    SchedulesComponent
+    SchedulesComponent,
+    AppointmentComponent
   ],
   imports: [
     BrowserModule,

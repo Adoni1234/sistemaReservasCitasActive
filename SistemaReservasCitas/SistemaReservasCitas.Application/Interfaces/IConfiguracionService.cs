@@ -18,5 +18,8 @@ namespace SistemaReservasCitas.Application.Interfaces
         Task<IEnumerable<Turno>> ObtenerTurnoAllAsync();
         Task<IEnumerable<Horario>> ObtenerHorarioAllAsync();
         Task<IEnumerable<FechaHabilitada>> ObtenerFechaHabilitadaAllAsync();
+        
+        Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDeEsteUsuarioAsync(int userId);
+        Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDisponibles();
     }
 }

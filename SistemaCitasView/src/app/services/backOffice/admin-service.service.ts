@@ -29,7 +29,7 @@ export class AdminServiceService {
     }
 
     public CreateShifts(data: Turnos) {
-       return this.http.post<any>(`${environment.apiUrl}/${this.url}/fechas-habilitadas`,data,{ headers: this.getHeaders() }
+       return this.http.post<any>(`${environment.apiUrl}/${this.url}/turnos`,data,{ headers: this.getHeaders() }
       );
     }
 

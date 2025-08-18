@@ -12,12 +12,12 @@ namespace SistemaReservasCitas.Application.Services
     {
         private readonly IRepository<FechaHabilitada> _fechasRepository;
         private readonly IRepository<Horario> _horarioRepository;
-        private readonly IRepository<Turno> _turnoRepository;
+        private readonly ITurnoRepository _turnoRepository;
 
         public ConfiguracionService(
             IRepository<FechaHabilitada> fechasRepository,
             IRepository<Horario> horarioRepository,
-            IRepository<Turno> turnoRepository)
+            ITurnoRepository turnoRepository)
         {
             _fechasRepository = fechasRepository;
             _horarioRepository = horarioRepository;
@@ -119,17 +119,30 @@ namespace SistemaReservasCitas.Application.Services
             var fecha = await _fechasRepository.GetAllAsync();
             return fecha;
         }
+        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDeEsteUsuarioAsync(int userId)
+        {
+            
+            return await _turnoRepository.GetAllTheShiftsOfTheUserAsync(userId);
+        }
 
         public async Task<IEnumerable<Horario>> ObtenerHorarioAllAsync()
         {
             var horario = await _horarioRepository.GetAllAsync();
             return horario;
         }
-
+        
+        //TODO: COMPAI LLAMAR A ADONI PA QUE NO NOS LLEVE EL DIABLO.
         public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync()
         {
-            var turno = await _turnoRepository.GetAllAsync();
-            return turno;
+            var turnos = await _turnoRepository.GetAllAsync();
+            return turnos;
         }
+        
+        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDisponibles()
+        {
+            var turnosDisponibles = await _turnoRepository.GetAllAvailableShiftsAsync();
+            return turnosDisponibles;
+        }
+        
     }
 }
