@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaReservasCitas.Application.Interfaces;
 using SistemaReservasCitas.Domain.DTOs;
@@ -41,12 +42,33 @@ namespace SistemaReservasCitasApi.Controllers
             return Ok(citas);
         }
 
-        [HttpDelete("{citaId}")]
+        [HttpDelete("{turnoId}")]
         [Authorize(Roles = "user")]
-        public async Task<IActionResult> CancelarCita(int citaId)
+        public async Task<IActionResult> CancelarCita(int turnoId)
         {
-            var success = await _citaService.CancelarCitaAsync(citaId);
+            int userId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var success = await _citaService.CancelarCitaAsync(turnoId);
             return success ? Ok() : NotFound();
         }
+        
+        [HttpDelete("porUsuario/{turnoId}")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> CancelarCitaPorUsuarioYTurno(int turnoId)
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized("No se pudo obtener el usuario del token");
+            }
+
+            int userId = int.Parse(userIdClaim);
+
+            var success = await _citaService.CancelarCitaPorIdAsync(turnoId, userId);
+
+            return success != null
+                ? Ok($"Cita {success.Id} eliminada correctamente")
+                : NotFound("No se encontró la cita para este usuario y turno");
+        }
+        
     }
 }

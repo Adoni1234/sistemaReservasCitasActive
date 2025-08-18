@@ -10,13 +10,13 @@ namespace SistemaReservasCitas.Application.Services
     public class CitaService : ICitaService
     {
 
-        private readonly IRepository<Cita> _citaRepository;
+        private readonly ICitaRepository _citaRepository;
         private readonly IRepository<Turno> _turnoRepository;
         private readonly IRepository<Usuario> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ReservaValidations _validations;
         public CitaService(
-            IRepository<Cita> citaRepository, 
+            ICitaRepository citaRepository, 
             IRepository<Turno> turnoRepository, 
             IEmailService emailService, 
             ReservaValidations validations, 
@@ -71,6 +71,12 @@ namespace SistemaReservasCitas.Application.Services
             if (cita == null) return false;
             await _citaRepository.DeleteAsync(citaId);
             return true;
+        }
+        
+        public async Task<Cita> CancelarCitaPorIdAsync(int turnoId, int usuarioId)
+        {
+           return await _citaRepository.DeleteshiftByIdAsync(turnoId, usuarioId);
+            
         }
     }
 }

@@ -130,16 +130,18 @@ namespace SistemaReservasCitas.Application.Services
             var horario = await _horarioRepository.GetAllAsync();
             return horario;
         }
-
-        //REMINDER: Hacer un metodo aparte para este filtro, ya que esa logica nos afecta el controlador general.
+        
         //TODO: COMPAI LLAMAR A ADONI PA QUE NO NOS LLEVE EL DIABLO.
-        public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync(int userId)
+        public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync()
         {
             var turnos = await _turnoRepository.GetAllAsync();
-            List<Turno> turnosFiltrados = turnos.ToList();
-            //turnosFiltrados.RemoveAll(t => t.Citas.Any(c => c.IdUsuario == userId));
-         
-            return turnosFiltrados;
+            return turnos;
+        }
+        
+        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDisponibles()
+        {
+            var turnosDisponibles = await _turnoRepository.GetAllAvailableShiftsAsync();
+            return turnosDisponibles;
         }
         
     }

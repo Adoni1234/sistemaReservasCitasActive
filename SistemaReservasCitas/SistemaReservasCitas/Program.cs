@@ -52,6 +52,7 @@ builder.Services.AddSingleton<IEmailService, EmailService>(provider =>
     new EmailService(builder.Configuration));
 builder.Services.AddScoped<IConfiguracionService, ConfiguracionService>();
 builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
+builder.Services.AddScoped<ICitaRepository, CitaRepository>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(SqlRepository<>));
 

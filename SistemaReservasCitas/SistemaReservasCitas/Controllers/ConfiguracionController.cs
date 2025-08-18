@@ -192,12 +192,11 @@ namespace SistemaReservasCitas.Controllers
 
         [HttpGet("turnos")]
         [Authorize(Roles = "admin, user")]
-        public async Task<IActionResult> ObtenerTodosTurno(int userId)
+        public async Task<IActionResult> ObtenerTodosTurno()
         {
             try
             {
-                int id = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var turno = await _configuracionService.ObtenerTurnoAllAsync(id);
+                var turno = await _configuracionService.ObtenerTurnoAllAsync();
                 return Ok(turno);
             }
             catch (Exception ex)
@@ -207,7 +206,7 @@ namespace SistemaReservasCitas.Controllers
             }
         }
 
-        [HttpGet("turnos/usuarios/thisUser")]
+        [HttpGet("turnos/usuarios/esteUsuario")]
         [AllowAnonymous]
         //[Authorize(Roles = "user")]
         public async Task<IActionResult> ObtenerTodosLosTurnosDeEsteUsuario()
@@ -217,6 +216,23 @@ namespace SistemaReservasCitas.Controllers
                 int id = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var turno = await _configuracionService.ObtenerTodosLosTurnosDeEsteUsuarioAsync(id);
                 return Ok(turno);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error interno al consultar turno: {Message}", ex.Message);
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
+        [HttpGet("turnos/disponibles")]
+        //[Authorize(Roles = "user")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObtenerTodosLosTurnosDisponibles()
+        {
+            try
+            {
+                var turnosDisponibles = await _configuracionService.ObtenerTodosLosTurnosDisponibles();
+                return Ok(turnosDisponibles);
             }
             catch (Exception ex)
             {

@@ -52,6 +52,17 @@ import { Horaios } from "../../Models/Horarios";
           placeholder="Tiempo por cita (minutos)"
           [(ngModel)]="tiempoCita"
         />
+
+        <select
+        class="border p-2 rounded"
+        placeholder="Seleccionar horario"
+        [(ngModel)]="selectedHorarioId"
+        >
+        <option value="" disabled selected>-- Selecciona un horario --</option>
+        <option *ngFor="let h of horarios" [value]="h.id">
+          {{ h.inicio }} - {{ h.fin }} ({{ h.nombreTurno }})
+        </option>
+      </select>
         <button
           class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
           (click)="createShift()"
@@ -67,7 +78,7 @@ import { Horaios } from "../../Models/Horarios";
           <tr class="bg-gray-200">
             <th class="px-4 py-2">ID</th>
             <th class="px-4 py-2">Fecha</th>
-            <th class="px-4 py-2">Horario ID</th>
+            <th class="px-4 py-2">Horario </th>
             <th class="px-4 py-2">Estaciones</th>
             <th class="px-4 py-2">Tiempo por cita</th>
           </tr>
@@ -89,6 +100,7 @@ import { Horaios } from "../../Models/Horarios";
 export class ShiftsComponent implements OnInit {
   shifts: Turnos[] = [];
   horarios: Horaios[] = []; // Solo en este componente
+  selectedHorarioId: number = 0;
   selectedDate: string | null = null;
   estacionesCantidad: number | null = null;
   tiempoCita: number | null = null;
@@ -129,7 +141,7 @@ export class ShiftsComponent implements OnInit {
     const newShift: Turnos = {
       id: this.shifts.length + 1,
       fecha: new Date(this.selectedDate),
-      idHorario: 1,
+      idHorario: this.selectedHorarioId,
       estacionesCantidad: this.estacionesCantidad,
       tiempoCita: this.tiempoCita,
     };

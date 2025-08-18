@@ -3,6 +3,7 @@ import { AppointmentsServices } from "../../services/appointments-services";
 import { Turnos } from "../../Models/Turnos";
 import { Citas } from "../../Models/Citas";
 import { AuthService } from "../../services/auth-service.service";
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'AppointmentComponent',
@@ -12,7 +13,7 @@ import { AuthService } from "../../services/auth-service.service";
       <!-- Tabla 1: Turnos del usuario -->
       <div>
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold">Citas a las que estas suscrto</h2>
+          <h2 class="text-xl font-semibold">Citas a las que estas suscrito</h2>
         </div>
 
         <table class="table-auto w-full bg-white shadow rounded overflow-hidden">
@@ -111,20 +112,28 @@ export class AppointmentComponent implements OnInit {
   constructor(private api: AppointmentsServices, private authService :AuthService ) {}
     
 
-  ngOnInit(): void {
-  
-    this.api.getAllAvailableShifts().subscribe((data : Turnos[]) => this.turnosDisponibles = data);
-    this.api.getShiftsOfUser().subscribe((data: Turnos[]) => this.turnosDelUsuario =data);
-    
+ngOnInit(): void {
+  forkJoin({
+    disponibles: this.api.getAllAvailableShifts(),
+    usuario: this.api.getShiftsOfUser()
+  }).subscribe(({ disponibles, usuario }) => {
+    this.turnosDisponibles = disponibles;
+    this.turnosDelUsuario = usuario;
 
-const token = this.authService.getToken();
-    if (token) {
-      const decoded = this.authService.decodeToken();
-      if (decoded && decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']) {
-        this.userId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
-      }
+    const idsAEliminar = new Set(this.turnosDelUsuario.map(obj => obj.id));
+    this.turnosDisponibles = this.turnosDisponibles.filter(obj => !idsAEliminar.has(obj.id));
+ 
+    console.log("Disponibles filtrados:", this.turnosDisponibles);
+  });
+ 
+  const token = this.authService.getToken();
+  if (token) {
+    const decoded = this.authService.decodeToken();
+    if (decoded && decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']) {
+      this.userId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
     }
   }
+}
 
 DeleteAppointment(id: number) {
   this.api.deletebyId(id).subscribe({

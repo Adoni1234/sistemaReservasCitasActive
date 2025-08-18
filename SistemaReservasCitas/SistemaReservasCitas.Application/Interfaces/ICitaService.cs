@@ -14,6 +14,7 @@ namespace SistemaReservasCitas.Application.Interfaces
         Task<Cita> ReservarCitaAsync(int usuarioId, int turnoId);
         Task<IEnumerable<CitasDto>> ObtenerCitasPorUsuarioAsync(int usuarioId);
         Task<bool> CancelarCitaAsync(int citaId);
+        Task<Cita> CancelarCitaPorIdAsync(int turnoId, int usuarioId);
     }
 
 }

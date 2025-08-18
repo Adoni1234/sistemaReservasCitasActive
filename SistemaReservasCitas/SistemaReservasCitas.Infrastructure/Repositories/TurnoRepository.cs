@@ -11,17 +11,17 @@ public class TurnoRepository : SqlRepository<Turno>, ITurnoRepository
 	{
 	}
 	
-	public override async Task<IEnumerable<Turno>> GetAllAsync()
-	{
-		return await _context.Set<Turno>()
-			.Include(t => t.Citas)
-			.Where(t => t.Citas.Count < t.EstacionesCantidad).ToListAsync();
-
-	}
 	
 	public async Task<List<Turno>> GetAllTheShiftsOfTheUserAsync(int userId)
 	{
 		return await this._context.Turno.Where(t => t.Citas.Any(c => c.IdUsuario == userId)).ToListAsync();
 		
+	}
+
+	public async Task<List<Turno>> GetAllAvailableShiftsAsync()
+	{
+		return await _context.Set<Turno>()
+			.Include(t => t.Citas)
+			.Where(t => t.Citas.Count < t.EstacionesCantidad).ToListAsync();
 	}
 }

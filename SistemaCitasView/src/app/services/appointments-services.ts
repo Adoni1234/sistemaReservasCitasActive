@@ -24,12 +24,12 @@ export class AppointmentsServices {
 
 
   public getAllAvailableShifts() {
-    return this.http.get<Turnos[]>(`${environment.apiUrl}/Configuracion/turnos`, { headers: this.getHeaders() }
+    return this.http.get<Turnos[]>(`${environment.apiUrl}/Configuracion/turnos/disponibles`, { headers: this.getHeaders() }
     );
   }
 
   public getShiftsOfUser() {
-    return this.http.get<Turnos[]>(`${environment.apiUrl}/Configuracion/turnos/usuarios/thisUser`, { headers: this.getHeaders() }
+    return this.http.get<Turnos[]>(`${environment.apiUrl}/Configuracion/turnos/usuarios/esteUsuario`, { headers: this.getHeaders() }
     );
   }
 
@@ -38,8 +38,8 @@ public postAppointment(usuarioId: number, turnoId: number) {
     `${environment.apiUrl}/${this.url}/reservar/${usuarioId}/${turnoId}`, {}, { headers: this.getHeaders() });
 }
 
-  public deletebyId(citaId: number) {
-    return this.http.delete<any>(`${environment.apiUrl}/${this.url}/${citaId}`, { headers: this.getHeaders() }
+  public deletebyId(turnoId: number) {
+    return this.http.delete<any>(`${environment.apiUrl}/${this.url}/porUsuario/${turnoId}`, { headers: this.getHeaders() }
     );
   }
 
