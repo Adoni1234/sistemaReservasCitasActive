@@ -42,18 +42,9 @@ namespace SistemaReservasCitasApi.Controllers
             return Ok(citas);
         }
 
-        [HttpDelete("{turnoId}")]
+        [HttpDelete("porUsuario/{slotId}/{usuarioId}")]
         [Authorize(Roles = "user")]
-        public async Task<IActionResult> CancelarCita(int turnoId)
-        {
-            int userId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var success = await _citaService.CancelarCitaAsync(turnoId);
-            return success ? Ok() : NotFound();
-        }
-        
-        [HttpDelete("porUsuario/{turnoId}")]
-        [Authorize(Roles = "user")]
-        public async Task<IActionResult> CancelarCitaPorUsuarioYTurno(int turnoId)
+        public async Task<IActionResult> CancelarCitaPorUsuarioYTurno(int slotId, int usuarioId)
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdClaim))
@@ -62,12 +53,8 @@ namespace SistemaReservasCitasApi.Controllers
             }
 
             int userId = int.Parse(userIdClaim);
-
-            var success = await _citaService.CancelarCitaPorIdAsync(turnoId, userId);
-
-            return success != null
-                ? Ok($"Cita {success.Id} eliminada correctamente")
-                : NotFound("No se encontró la cita para este usuario y turno");
+            await _citaService.CancelarCitaAsync(slotId, userId);
+            return Ok();
         }
         
     }

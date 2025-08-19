@@ -37,8 +37,6 @@ namespace SistemaReservasCitas.Application.Services
                 var user = await _userRepository.GetByIdAsync(usuarioId);
                 var email = user.Email;
 
-                //await _validations.ValidarFechaHabilitadaAsync(slotInfo.Turno.Fecha);
-                //await _validations.ValidarTurnoNoLlenoAsync(slotId);
                 await _validations.ValidarUsuarioSinCitaEnFechaAsync(usuarioId, slotInfo.Turno.Fecha);
 
                 var cita = new Cita { IdUsuario = usuarioId, IdSlot = slotId };
@@ -49,7 +47,6 @@ namespace SistemaReservasCitas.Application.Services
                                       $" favor de asistir en la fecha programada {slotInfo.Turno.Fecha} entre " +
                                       $"las {slotInfo.HoraInicio} y las {slotInfo.HoraFin}");
                 return cita;
-            
         }
 
         public async Task<IEnumerable<CitasDto>> ObtenerCitasPorUsuarioAsync(int usuarioId)
@@ -69,18 +66,10 @@ namespace SistemaReservasCitas.Application.Services
             return citasDto.Where(c => c.UsuarioId == usuarioId).ToList();
         }
 
-        public async Task<bool> CancelarCitaAsync(int citaId)
+        public async Task CancelarCitaAsync(int slotid, int usuarioId)
         {
-            var cita = await _citaRepository.GetByIdAsync(citaId);
-            if (cita == null) return false;
-            await _citaRepository.DeleteAsync(citaId);
-            return true;
+            await _citaRepository.DeleteBySlotIdAndUserId(slotid, usuarioId);
         }
-        
-        public async Task<Cita> CancelarCitaPorIdAsync(int turnoId, int usuarioId)
-        {
-           return await _citaRepository.DeleteshiftByIdAsync(turnoId, usuarioId);
-            
-        }
+
     }
 }

@@ -12,4 +12,5 @@ public interface ITurnoRepository : IRepository<Turno>
 	
 	Task<bool> ThatSlotIsTaken(int slotId);
 	Task<Slot?> GetSlotInfo(int slotId);
+	
 }

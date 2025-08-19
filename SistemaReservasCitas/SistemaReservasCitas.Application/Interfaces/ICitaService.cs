@@ -11,10 +11,9 @@ namespace SistemaReservasCitas.Application.Interfaces
 
     public interface ICitaService
     {
-        Task<Cita> ReservarCitaAsync(int usuarioId, int turnoId);
+        Task<Cita> ReservarCitaAsync(int usuarioId, int slotid);
         Task<IEnumerable<CitasDto>> ObtenerCitasPorUsuarioAsync(int usuarioId);
-        Task<bool> CancelarCitaAsync(int citaId);
-        Task<Cita> CancelarCitaPorIdAsync(int turnoId, int usuarioId);
+        Task CancelarCitaAsync(int slotid, int  usuarioId);
     }
 
 }
