@@ -1,6 +1,7 @@
 ﻿using System.Security.Principal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using ProyectoFinal.Models;
 using SistemaReservasCitas.Domain.Entities;
 
 namespace SistemaReservasCitas.Infrastructure.Data
@@ -33,14 +34,19 @@ namespace SistemaReservasCitas.Infrastructure.Data
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .ValueGeneratedOnAdd(); // esto es suficiente// 💡 evita relectura después del insert
+                    .ValueGeneratedOnAdd();
+                // Relaciones
+                modelBuilder.Entity<Cita>()
+                    .HasOne(c => c.Usuario)
+                    .WithMany(u => u.Citas)
+                    .HasForeignKey(c => c.IdUsuario);
+
+                modelBuilder.Entity<Cita>()
+                    .HasOne(c => c.Slots)
+                    .WithOne(c => c.Cita).HasForeignKey<Cita>(c => c.idSlots);
+
 
                 entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                entity.Property(e => e.TurnoId).HasColumnName("turno_id");
-
-                entity.HasOne<Turno>()
-                    .WithMany(t => t.Citas)
-                    .HasForeignKey(c => c.TurnoId);
 
                 entity.HasOne<Usuario>()
                     .WithMany()
@@ -70,28 +76,17 @@ namespace SistemaReservasCitas.Infrastructure.Data
                 .HasColumnName("rol")
                 .HasConversion<int>();
 
-            // Relaciones
-            modelBuilder.Entity<Cita>()
-                .HasOne(c => c.Usuario)
-                .WithMany(u => u.Citas)
-                .HasForeignKey(c => c.IdUsuario);
 
-            modelBuilder.Entity<Cita>()
-                .HasOne(c => c.Turno)
-                .WithMany(t => t.Citas)
-                .HasForeignKey(c => c.TurnoId);
+
+            //Turno   
+            modelBuilder.Entity<Turno>()
+             .HasOne(t => t.Horario)
+             .WithMany(h => h.Turnos)
+             .HasForeignKey(t => t.IdHorario);
 
             modelBuilder.Entity<Turno>()
-                .HasOne(t => t.Horario)
-                .WithMany(h => h.Turnos)
-                .HasForeignKey(t => t.IdHorario);
-
-
-
-            //Turno
-            modelBuilder.Entity<Turno>()
-           .Property(u => u.Id)
-           .HasColumnName("id");
+            .Property(u => u.Id)
+            .HasColumnName("id");
 
             modelBuilder.Entity<Turno>()
                    .Property(u => u.Fecha)
@@ -121,9 +116,6 @@ namespace SistemaReservasCitas.Infrastructure.Data
 
 
 
-            // Configuraciones adicionales
-            //modelBuilder.Entity<Turno>()
-            //    .Property(t => t.Estado)
 
             modelBuilder.Entity<Horario>(entity =>
             {
@@ -140,15 +132,25 @@ namespace SistemaReservasCitas.Infrastructure.Data
                       .HasDefaultValue(TimeSpan.Zero);
 
                 entity.Property(h => h.NombreTurno)
-                      .HasColumnName("nombre_turno") // ✅ aquí está la clave
+                      .HasColumnName("nombre_turno")
                       .HasMaxLength(50)
                       .HasDefaultValue("Sin nombre");
             });
 
 
+            modelBuilder.Entity<Slot>(entity =>
+            {
+                entity.HasKey(e => e.id).HasName("Slot_Id_PK");
+                entity.Property(s => s.inicioFecha)
+                    .IsRequired()
+                    .HasColumnType("time(0)")
+                    .HasColumnName("StartTime");
 
-
-
+                entity.Property(s => s.finFecha)
+                    .IsRequired()
+                    .HasColumnType("time(0)")
+                    .HasColumnName("EndTime");
+            });
 
         }
     }
