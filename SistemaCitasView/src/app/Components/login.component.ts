@@ -107,7 +107,7 @@ export class LoginComponent {
           sessionStorage.setItem('token', res.data.token);
           this.successMessage = 'Inicio de sesión exitoso';
           setTimeout(() => {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/home']);
           }, 1000);
         } else {
           this.errorMessage = res.message || 'Error en el inicio de sesión';

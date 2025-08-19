@@ -1,33 +1,43 @@
-// src/app/services/auth.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
-
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private tokenKey = 'token';
+  private loggedIn = new BehaviorSubject<boolean>(false);
+  isLoggedIn$ = this.loggedIn.asObservable();
 
-  private tokenKey = 'token'; // nombre usado en sessionStorage
+  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loggedIn.next(!!this.getToken());
+    }
+  }
 
-  constructor() {}
-
-  // Guardar token
   setToken(token: string): void {
-    sessionStorage.setItem(this.tokenKey, token);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem(this.tokenKey, token);
+      this.loggedIn.next(true);
+    }
   }
 
-  // Obtener token
   getToken(): string | null {
-    return sessionStorage.getItem(this.tokenKey);
+    if (isPlatformBrowser(this.platformId)) {
+      return sessionStorage.getItem(this.tokenKey);
+    }
+    return null;
   }
 
-  // Eliminar token
   removeToken(): void {
-    sessionStorage.removeItem(this.tokenKey);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.removeItem(this.tokenKey);
+    }
+    this.loggedIn.next(false);
   }
 
-  // Decodificar token
   decodeToken(): any | null {
     const token = this.getToken();
     if (!token) return null;
@@ -40,7 +50,6 @@ export class AuthService {
     }
   }
 
-  // Saber si el token expiró
   isTokenExpired(): boolean {
     const decoded: any = this.decodeToken();
     if (!decoded || !decoded.exp) return true;

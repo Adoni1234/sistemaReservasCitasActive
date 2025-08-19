@@ -8,12 +8,13 @@ import { AuthService } from './services/auth-service.service';
 })
 export class AppComponent {
   title = 'SistemaCitasView';
-
-    isLoggedIn = false;
+  isLoggedIn = false;
 
   constructor(public authService: AuthService) {}
 
   ngOnInit() {
-    this.isLoggedIn = !!this.authService.getToken();
+    this.authService.isLoggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
   }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'LayoutComponent',
@@ -18,6 +19,14 @@ import { AuthService } from '../../services/auth-service.service';
       
       <!-- Botones de menú -->
       <nav class="flex-1 mt-4 flex flex-col">
+        <button
+          class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
+          routerLink="/home"
+        >
+          <i class="fa-solid fa-house mr-3"></i>
+          <span>Home</span>
+        </button>
+        
         <div *ngIf="role == 'admin'">
         <button
           class="flex items-center w-full px-4 py-3 hover:bg-gray-700 transition-colors"
@@ -78,7 +87,7 @@ import { AuthService } from '../../services/auth-service.service';
 export class LayoutComponent { // admin o user Role -> Admin o user -> *ngIF="admin"
   userName: string = 'Usuario';
   role: string = '';
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
     const token = this.authService.getToken();
     if (token) {
       const decoded = this.authService.decodeToken();
@@ -93,8 +102,9 @@ export class LayoutComponent { // admin o user Role -> Admin o user -> *ngIF="ad
     }
   }
 
-  logout() {
-    this.authService.removeToken();
-    window.location.href = '/login';
-  }
+logout() {
+  this.authService.removeToken();
+   this.router.navigate(['']);
+}
+
 }

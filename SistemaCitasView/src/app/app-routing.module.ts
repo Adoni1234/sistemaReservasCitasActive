@@ -7,6 +7,7 @@ import { BusinessDateComponent } from './Components/BackOffice/BusinessDate.comp
 import { ShiftsComponent } from './Components/BackOffice/Shifts.component';
 import { SchedulesComponent } from './Components/BackOffice/Schedules.component';
 import { AppointmentComponent } from './Components/Appointment/appointment.component';
+import { HomeComponent } from './Components/home.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: 'Appointments',
     component: AppointmentComponent
+  },
+  {
+    path: 'home',
+    component: HomeComponent
   }
 ];
 
