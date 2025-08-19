@@ -11,10 +11,10 @@ public class CitaRepository : SqlRepository<Cita>, ICitaRepository
 	{
 	}
 
-	public async Task<Cita> DeleteshiftByIdAsync(int turnoId, int userId)
+	public async Task<Cita> DeleteshiftByIdAsync(int slotId, int userId)
 	{ 
 		var cita = await _context.Cita
-			.FirstOrDefaultAsync(c => c.TurnoId == turnoId && c.IdUsuario == userId);
+			.FirstOrDefaultAsync(c => c.Slot.Id == slotId && c.IdUsuario == userId);
 
 		_context.Cita.Remove(cita);
 		await _context.SaveChangesAsync();

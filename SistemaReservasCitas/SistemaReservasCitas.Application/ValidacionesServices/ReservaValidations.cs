@@ -11,27 +11,36 @@ namespace SistemaReservasCitas.Application.ValidacionesServices
     public class ReservaValidations
     {
         private readonly IRepository<Cita> _citaRepository;
-        private readonly IRepository<Turno> _turnoRepository;
+        private readonly ITurnoRepository _turnoRepository;
         private readonly IRepository<FechaHabilitada> _fechaHabilitadaRepository;
 
         public ReservaValidations(
             IRepository<Cita> citaRepository,
-            IRepository<Turno> turnoRepository,
+            ITurnoRepository turnoRepository,
             IRepository<FechaHabilitada> fechaHabilitadaRepository)
         {
             _citaRepository = citaRepository;
             _turnoRepository = turnoRepository;
             _fechaHabilitadaRepository = fechaHabilitadaRepository;
         }
-
-        public async Task ValidarTurnoActivoAsync(int turnoId)
+    
+        // TODO quitar
+        public async Task ValidarSlot(int slotId)
         {
-            var turno = await _turnoRepository.GetByIdAsync(turnoId);
+            var turno = await _turnoRepository.GetByIdAsync(slotId);
             if (turno == null || turno.Estado != "activo")
                 throw new Exception("Turno no disponible.");
         }
 
-        public async Task ValidarFechaHabilitadaAsync(DateTime fecha)
+        public async Task EsteSlotEstaTomando(int slotId)
+        {
+            if (await this._turnoRepository.ThatSlotIsTaken(slotId))
+            {
+                throw new Exception("Turno no disponible.");
+            }
+        }
+
+        /*public async Task ValidarFechaHabilitadaAsync(DateTime fecha)
         {
             var habilitada = await _fechaHabilitadaRepository
                 .GetAllAsync()
@@ -49,13 +58,13 @@ namespace SistemaReservasCitas.Application.ValidacionesServices
 
             if (cantidadCitas >= turno.EstacionesCantidad)
                 throw new Exception("Turno lleno.");
-        }
+        }*/
 
         public async Task ValidarUsuarioSinCitaEnFechaAsync(int usuarioId, DateTime fecha)
         {
             var citas = await _citaRepository.GetAllAsync();
 
-            bool tieneCita = citas.Any(c => c.IdUsuario == usuarioId && c.Turno != null && c.Turno.Fecha == fecha);
+            bool tieneCita = citas.Any(c => c.IdUsuario == usuarioId && c.Slot.Turno.Fecha != null && c.Slot.Turno.Fecha == fecha);
 
             if (tieneCita)
                 throw new Exception("Un usuario no puede tener más de una cita por día.");

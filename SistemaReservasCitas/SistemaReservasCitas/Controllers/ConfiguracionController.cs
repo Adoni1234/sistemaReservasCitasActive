@@ -196,7 +196,7 @@ namespace SistemaReservasCitas.Controllers
         {
             try
             {
-                var turno = await _configuracionService.ObtenerTurnoAllAsync();
+                var turno = await _configuracionService.ObtenerTodosLosTurnosAsync();
                 return Ok(turno);
             }
             catch (Exception ex)

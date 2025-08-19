@@ -87,7 +87,46 @@ namespace SistemaReservasCitas.Application.Services
                 Estado = "activo"
             };
             await _turnoRepository.AddAsync(turno);
+            await this.GenerarSlots(turno);
             return turno;
+        }
+        
+        // Yo
+        private async Task GenerarSlots(Turno turno)
+        {
+            var horario = await _horarioRepository.GetByIdAsync(turno.IdHorario);
+            var slots = new List<Slot>();
+            var tiempoDisp = horario.Inicio;
+
+
+            for (int i = 0; i < turno.EstacionesCantidad - 1; i++)
+            {
+                var slot = new Slot
+                {
+                    IdTurno = turno.Id,
+                    EstaTomando = false,
+                    HoraInicio = tiempoDisp,
+                    HoraFin = tiempoDisp.Add(TimeSpan.FromMinutes(40))
+                };
+                slots.Add(slot);
+                tiempoDisp = tiempoDisp.Add(TimeSpan.FromMinutes(40));
+            }
+            var ultimoSlot = new Slot
+            {
+                IdTurno = turno.Id,
+                EstaTomando = false,
+                HoraInicio = tiempoDisp,
+                HoraFin = tiempoDisp.Add(TimeSpan.FromMinutes(40))
+            };
+
+            if (ultimoSlot.HoraFin > horario.Fin)
+            {
+                var diff = ultimoSlot.HoraFin - horario.Fin;
+                ultimoSlot.HoraFin = ultimoSlot.HoraFin.Add(-diff);
+            }
+                
+            slots.Add(ultimoSlot);
+            await _turnoRepository.AddTheSlots(slots);
         }
 
         public async Task<FechaHabilitada> ObtenerFechaHabilitadaAsync(int id)
@@ -131,8 +170,7 @@ namespace SistemaReservasCitas.Application.Services
             return horario;
         }
         
-        //TODO: COMPAI LLAMAR A ADONI PA QUE NO NOS LLEVE EL DIABLO.
-        public async Task<IEnumerable<Turno>> ObtenerTurnoAllAsync()
+        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosAsync()
         {
             var turnos = await _turnoRepository.GetAllAsync();
             return turnos;

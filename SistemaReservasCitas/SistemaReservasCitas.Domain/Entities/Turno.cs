@@ -15,7 +15,8 @@ namespace SistemaReservasCitas.Domain.Entities
         public int TiempoCita { get; set; }
         public string Estado { get; set; } = string.Empty;
         public Horario? Horario { get; set; }
-        public List<Cita>? Citas { get; set; }
+        
+        public List<Slot>? Slots { get; set; }
     }
 }
 

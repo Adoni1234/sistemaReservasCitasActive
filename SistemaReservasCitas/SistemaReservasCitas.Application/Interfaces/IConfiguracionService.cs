@@ -8,18 +8,20 @@ namespace SistemaReservasCitas.Application.Interfaces
 {
     public interface IConfiguracionService
     {
+        // fechas
         Task<FechaHabilitada> CrearFechaHabilitadaAsync(CrearFechaHabilitadaDto fechaDto);
-        Task<Horario> CrearHorarioAsync(CrearHorarioDto horarioDto);
-        Task<Turno> CrearTurnoAsync(CrearTurnoDto turnoDto);
         Task<FechaHabilitada> ObtenerFechaHabilitadaAsync(int id);
-        Task<Horario> ObtenerHorarioAsync(int id);
-        Task<Turno> ObtenerTurnoAsync(int id);
-        //Task GenerarHorariosAsync();
-        Task<IEnumerable<Turno>> ObtenerTurnoAllAsync();
-        Task<IEnumerable<Horario>> ObtenerHorarioAllAsync();
         Task<IEnumerable<FechaHabilitada>> ObtenerFechaHabilitadaAllAsync();
         
+        //horarios
+        Task<Horario> ObtenerHorarioAsync(int id);
+        Task<IEnumerable<Horario>> ObtenerHorarioAllAsync();
+        Task<Horario> CrearHorarioAsync(CrearHorarioDto horarioDto);
+        // Turnos
+        Task<IEnumerable<Turno>> ObtenerTodosLosTurnosAsync();
         Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDeEsteUsuarioAsync(int userId);
         Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDisponibles();
+        Task<Turno> ObtenerTurnoAsync(int id);
+        Task<Turno> CrearTurnoAsync(CrearTurnoDto turnoDto);
     }
 }

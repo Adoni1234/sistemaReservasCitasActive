@@ -18,13 +18,13 @@ namespace SistemaReservasCitasApi.Controllers
             _citaService = citaService;
         }
 
-        [HttpPost("reservar/{usuarioId:int}/{turnoId:int}")]
+        [HttpPost("reservar/{usuarioId:int}/{slotId:int}")]
         [Authorize(Roles = "user")]
-        public async Task<IActionResult> ReservarCita(int usuarioId, int turnoId)
+        public async Task<IActionResult> ReservarCita(int usuarioId, int slotId)
         {
             try
             {
-                var cita = await _citaService.ReservarCitaAsync(usuarioId, turnoId);
+                var cita = await _citaService.ReservarCitaAsync(usuarioId, slotId);
                 return Ok(cita);
             }
             catch (Exception ex)

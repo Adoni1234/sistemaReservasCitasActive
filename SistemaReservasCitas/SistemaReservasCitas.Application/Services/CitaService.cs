@@ -11,13 +11,13 @@ namespace SistemaReservasCitas.Application.Services
     {
 
         private readonly ICitaRepository _citaRepository;
-        private readonly IRepository<Turno> _turnoRepository;
+        private readonly ITurnoRepository _turnoRepository;
         private readonly IRepository<Usuario> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ReservaValidations _validations;
         public CitaService(
             ICitaRepository citaRepository, 
-            IRepository<Turno> turnoRepository, 
+            ITurnoRepository turnoRepository, 
             IEmailService emailService, 
             ReservaValidations validations, 
             IRepository<Usuario> userRepository)
@@ -29,21 +29,25 @@ namespace SistemaReservasCitas.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<Cita> ReservarCitaAsync(int usuarioId, int turnoId)
-        {
-                await _validations.ValidarTurnoActivoAsync(turnoId);
+        public async Task<Cita> ReservarCitaAsync(int usuarioId, int slotId)
+        {       
+                await _validations.EsteSlotEstaTomando(slotId);
 
-                var turno = await _turnoRepository.GetByIdAsync(turnoId);
+                var slotInfo = await _turnoRepository.GetSlotInfo(slotId);
                 var user = await _userRepository.GetByIdAsync(usuarioId);
                 var email = user.Email;
 
-                await _validations.ValidarFechaHabilitadaAsync(turno.Fecha);
-                await _validations.ValidarTurnoNoLlenoAsync(turnoId);
-                await _validations.ValidarUsuarioSinCitaEnFechaAsync(usuarioId, turno.Fecha);
+                //await _validations.ValidarFechaHabilitadaAsync(slotInfo.Turno.Fecha);
+                //await _validations.ValidarTurnoNoLlenoAsync(slotId);
+                await _validations.ValidarUsuarioSinCitaEnFechaAsync(usuarioId, slotInfo.Turno.Fecha);
 
-                var cita = new Cita { IdUsuario = usuarioId, TurnoId = turnoId };
+                var cita = new Cita { IdUsuario = usuarioId, IdSlot = slotId };
                 await _citaRepository.AddAsync(cita);
-                await _emailService.SendEmailAsync(email, "Cita Reservada", $"Estimado/a {user.UsuarioNombre} su cita fue reservada correctamente, favor de asistir en la fecha programada {turno.Fecha}");
+                await _emailService.SendEmailAsync(
+                    email, 
+                    "Cita Reservada", $"Estimado/a {user.UsuarioNombre} su cita fue reservada correctamente," + 
+                                      $" favor de asistir en la fecha programada {slotInfo.Turno.Fecha} entre " +
+                                      $"las {slotInfo.HoraInicio} y las {slotInfo.HoraFin}");
                 return cita;
             
         }
@@ -58,7 +62,7 @@ namespace SistemaReservasCitas.Application.Services
                 {
                     Id = cita.Id,
                     UsuarioId = usuarioId,
-                    TurnoId = cita.TurnoId
+                    SlotId = cita.IdSlot 
                     
                 });
             }
