@@ -14,6 +14,7 @@ import { BusinessDateComponent } from './Components/BackOffice/BusinessDate.comp
 import { ShiftsComponent } from './Components/BackOffice/Shifts.component';
 import { SchedulesComponent } from './Components/BackOffice/Schedules.component';
 import { AppointmentComponent } from './Components/Appointment/appointment.component';
+import { HomeComponent } from './Components/home.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AppointmentComponent } from './Components/Appointment/appointment.compo
     BusinessDateComponent,
     ShiftsComponent,
     SchedulesComponent,
-    AppointmentComponent
+    AppointmentComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
