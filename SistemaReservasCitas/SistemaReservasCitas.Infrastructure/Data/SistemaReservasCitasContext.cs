@@ -38,26 +38,24 @@ namespace SistemaReservasCitas.Infrastructure.Data
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedOnAdd();
-                
+
+                // Mapeo columnas con nombres reales de la BD
+                entity.Property(e => e.IdUsuario)
+                    .HasColumnName("id_usuario");
+
+                entity.Property(e => e.IdSlot)
+                    .HasColumnName("idSlots");
+
                 // Relaciones
-                modelBuilder.Entity<Cita>()
-                    .HasOne(c => c.Usuario)
+                entity.HasOne(c => c.Usuario)
                     .WithMany(u => u.Citas)
                     .HasForeignKey(c => c.IdUsuario);
 
-                modelBuilder.Entity<Cita>()
-                    .HasOne(c => c.Slot)
-                    .WithOne(c => c.Cita)
+                entity.HasOne(c => c.Slot)
+                    .WithOne(s => s.Cita)
                     .HasForeignKey<Cita>(c => c.IdSlot);
-
-                entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                
-                entity.Property(e => e.IdSlot).HasColumnName("idSlots");
-
-                entity.HasOne<Usuario>()
-                    .WithMany()
-                    .HasForeignKey(c => c.IdUsuario);
             });
+
 
 
             // Mapeo de columnas para Usuario

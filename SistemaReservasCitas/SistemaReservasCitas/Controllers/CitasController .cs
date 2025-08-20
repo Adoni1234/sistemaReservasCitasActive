@@ -19,7 +19,7 @@ namespace SistemaReservasCitasApi.Controllers
         }
 
         [HttpPost("reservar/{usuarioId:int}/{slotId:int}")]
-        [Authorize(Roles = "user")]
+        //[Authorize(Roles = "user")]
         public async Task<IActionResult> ReservarCita(int usuarioId, int slotId)
         {
             try
