@@ -196,7 +196,8 @@ namespace SistemaReservasCitas.Controllers
         {
             try
             {
-                var turno = await _configuracionService.ObtenerTodosLosTurnosAsync();
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var turno = await _configuracionService.ObtenerTodosLosTurnosAsync(userId);
                 return Ok(turno);
             }
             catch (Exception ex)

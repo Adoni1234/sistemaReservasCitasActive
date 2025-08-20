@@ -170,10 +170,13 @@ namespace SistemaReservasCitas.Application.Services
             return horario;
         }
         
-        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosAsync()
+        public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosAsync(int userFiltro)
         {
-            var turnos = await _turnoRepository.GetAllAsync();
-            return turnos;
+            var turnosDeEsteUsuario = await _turnoRepository.GetAllTheShiftsOfTheUserAsync(userFiltro);
+            var turnos = new List<Turno>(await _turnoRepository.GetAllAsync());
+            var idsUsuario = turnosDeEsteUsuario.Select(t => t.Id).ToHashSet();
+            turnos.RemoveAll(t => idsUsuario.Contains(t.Id));
+           return turnos;
         }
         
         public async Task<IEnumerable<Turno>> ObtenerTodosLosTurnosDisponibles()
